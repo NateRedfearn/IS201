@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blackjack Trainer</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Baize.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    .table {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 30px;
+      margin: 80px auto;
+      max-width: 600px;
+    }
+
+    .question {
+      font-size: 28px;
+      margin-bottom: 25px;
+    }
+
+    .cards {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 12px 25px;
+      margin: 10px;
+      background: #004d00;
+      color: white;
+      border: 2px solid white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #008000;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="table">
+    <h1>Blackjack Strategy Quiz</h1>
+    <div class="cards" id="cardDisplay"></div>
+    <div class="question" id="questionText">Loading...</div>
+
+    <div id="buttons">
+      <button onclick="checkAnswer('Hit')">Hit</button>
+      <button onclick="checkAnswer('Stand')">Stand</button>
+      <button onclick="checkAnswer('Double')">Double</button>
+      <button onclick="checkAnswer('Split')">Split</button>
+    </div>
+
+    <div class="result" id="resultText"></div>
+    <div class="result" id="scoreText">Score: 0/0</div>
+  </div>
+
+  <script>
+    const questions = [
+      { hand: "Hard 16", dealer: "10", correct: "Hit", cards: "9♣ 7♦" },
+      { hand: "Hard 12", dealer: "4", correct: "Stand", cards: "10♠ 2♥" },
+      { hand: "Hard 11", dealer: "6", correct: "Double", cards: "6♦ 5♠" },
+      { hand: "Soft 18", dealer: "9", correct: "Hit", cards: "A♣ 7♥" },
+      { hand: "Pair of 8s", dealer: "9", correct: "Split", cards: "8♠ 8♥" },
+      { hand: "Soft 13", dealer: "5", correct: "Double", cards: "A♦ 2♠" },
+      { hand: "Hard 13", dealer: "7", correct: "Hit", cards: "8♥ 5♣" },
+      { hand: "Pair of 10s", dealer: "6", correct: "Stand", cards: "10♦ 10♠" },
+      { hand: "Soft 19", dealer: "6", correct: "Stand", cards: "A♥ 8♣" }
+    ];
+
+    let current = 0;
+    let correctCount = 0;
+
+    function loadQuestion() {
+      const q = questions[current];
+      document.getElementById("cardDisplay").innerText = q.cards;
+      document.getElementById("questionText").innerText =
+        `Your hand: ${q.hand} | Dealer shows: ${q.dealer}`;
+      document.getElementById("resultText").innerText = "";
+    }
+
+    function checkAnswer(choice) {
+      const q = questions[current];
+      if (choice === q.correct) {
+        document.getElementById("resultText").innerText = "Correct!";
+        correctCount++;
+      } else {
+        document.getElementById("resultText").innerText =
+          `Wrong! Correct move was: ${q.correct}`;
+      }
+
+      current++;
+      document.getElementById("scoreText").innerText =
+        `Score: ${correctCount}/${current}`;
+
+      if (current < questions.length) {
+        setTimeout(loadQuestion, 1800);
+      } else {
+        document.getElementById("questionText").innerText = "Quiz complete!";
+        document.getElementById("buttons").style.display = "none";
+      }
+    }
+
+    loadQuestion();
+  </script>
+
+</body>
+</html>
