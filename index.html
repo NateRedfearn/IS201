@@ -86,6 +86,17 @@
       background-color: rgba(200, 0, 0, 0.8);
     }
 
+    #strategyTable {
+      display: none;
+      margin: 20px auto;
+      max-width: 90%;
+    }
+
+    #strategyTable img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
     h1 {
       margin-top: 20px;
       font-size: 32px;
@@ -112,128 +123,150 @@
 </head>
 <body>
 
-  <h1>Blackjack Strategy Trainer</h1>
-  <div class="table">
-    <div class="cards">
-      <div>
-        <h3>Dealer</h3>
-        <img id="dealerCard" class="card" src="">
-      </div>
-    </div>
+<h1>Blackjack Strategy Trainer</h1>
+<button onclick="toggleStrategyTable()">Show Basic Strategy Table</button>
+<div id="strategyTable">
+  <img src="/mnt/data/Attachment-1.jpeg" alt="Basic Strategy Table">
+</div>
 
-    <div class="cards">
-      <div>
-        <h3>Player</h3>
-        <img id="playerCard1" class="card" src="">
-        <img id="playerCard2" class="card" src="">
-      </div>
+<div class="table">
+  <div class="cards">
+    <div>
+      <h3>Dealer</h3>
+      <img id="dealerCard" class="card" src="">
     </div>
-
-    <div id="buttons">
-      <button onclick="checkAnswer('Hit')">Hit</button>
-      <button onclick="checkAnswer('Stand')">Stand</button>
-      <button onclick="checkAnswer('Double')">Double</button>
-      <button onclick="checkAnswer('Split')">Split</button>
-    </div>
-
-    <div id="dealButton" style="display:none;">
-      <button onclick="loadSituation()">Deal New Hand</button>
-    </div>
-
-    <div id="resultBanner" class="result-banner"></div>
-    <div id="scoreText">Score: 0/0 (Accuracy: 0%)</div>
   </div>
 
-  <script>
-    const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '0', 'J', 'Q', 'K', 'A'];
-    const suits = ['C', 'D', 'H', 'S'];
+  <div class="cards">
+    <div>
+      <h3>Player</h3>
+      <img id="playerCard1" class="card" src="">
+      <img id="playerCard2" class="card" src="">
+    </div>
+  </div>
 
-    function getRandomCard() {
-      const rank = cardRanks[Math.floor(Math.random() * cardRanks.length)];
-      const suit = suits[Math.floor(Math.random() * suits.length)];
-      return rank + suit;
-    }
+  <div id="buttons">
+    <button onclick="checkAnswer('Hit')">Hit</button>
+    <button onclick="checkAnswer('Stand')">Stand</button>
+    <button onclick="checkAnswer('Double')">Double</button>
+    <button onclick="checkAnswer('Split')">Split</button>
+    <button onclick="checkAnswer('Surrender')">Surrender</button>
+  </div>
 
-    function getCardValue(rank) {
-      if (['J', 'Q', 'K', '0'].includes(rank)) return 10;
-      if (rank === 'A') return 11;
-      return parseInt(rank);
-    }
+  <div id="dealButton" style="display:none;">
+    <button onclick="loadSituation()">Deal New Hand</button>
+  </div>
 
-    function evaluateMove(playerTotal, dealerValue, isSoft) {
-      if (isSoft) {
-        if (playerTotal <= 17) return 'Hit';
-        if (playerTotal === 18) return (dealerValue >= 9 || dealerValue === 1) ? 'Hit' : 'Stand';
-        return 'Stand';
-      } else {
-        if (playerTotal <= 8) return 'Hit';
-        if (playerTotal === 9) return (dealerValue >= 3 && dealerValue <= 6) ? 'Double' : 'Hit';
-        if (playerTotal === 10) return (dealerValue <= 9) ? 'Double' : 'Hit';
-        if (playerTotal === 11) return 'Double';
-        if (playerTotal === 12) return (dealerValue >= 4 && dealerValue <= 6) ? 'Stand' : 'Hit';
-        if (playerTotal >= 13 && playerTotal <= 16) return (dealerValue <= 6) ? 'Stand' : 'Hit';
-        return 'Stand';
-      }
-    }
+  <div id="resultBanner" class="result-banner"></div>
+  <div id="scoreText">Score: 0/0 (Accuracy: 0%)</div>
+</div>
 
-    let correctCount = 0;
-    let totalCount = 0;
-    let currentCorrectMove;
+<script>
+const cardRanks = ['2', '3', '4', '5', '6', '7', '8', '9', '0', 'J', 'Q', 'K', 'A'];
+const suits = ['C', 'D', 'H', 'S'];
 
-    function loadSituation() {
-      document.getElementById('dealButton').style.display = 'none';
-      const dealerCard = getRandomCard();
-      const playerCard1 = getRandomCard();
-      const playerCard2 = getRandomCard();
+function toggleStrategyTable() {
+  const table = document.getElementById('strategyTable');
+  table.style.display = table.style.display === 'none' ? 'block' : 'none';
+}
 
-      document.getElementById('dealerCard').classList.add('shuffle');
-      document.getElementById('playerCard1').classList.add('shuffle');
-      document.getElementById('playerCard2').classList.add('shuffle');
+function getRandomCard() {
+  const rank = cardRanks[Math.floor(Math.random() * cardRanks.length)];
+  const suit = suits[Math.floor(Math.random() * suits.length)];
+  return rank + suit;
+}
 
-      setTimeout(() => {
-        document.getElementById('dealerCard').src = `https://deckofcardsapi.com/static/img/${dealerCard}.png`;
-        document.getElementById('playerCard1').src = `https://deckofcardsapi.com/static/img/${playerCard1}.png`;
-        document.getElementById('playerCard2').src = `https://deckofcardsapi.com/static/img/${playerCard2}.png`;
-        document.getElementById('dealerCard').classList.remove('shuffle');
-        document.getElementById('playerCard1').classList.remove('shuffle');
-        document.getElementById('playerCard2').classList.remove('shuffle');
-        document.getElementById('resultBanner').innerText = '';
-        document.getElementById('resultBanner').className = 'result-banner';
-      }, 500);
+function getCardValue(rank) {
+  if (['J', 'Q', 'K', '0'].includes(rank)) return 10;
+  if (rank === 'A') return 11;
+  return parseInt(rank);
+}
 
-      const playerRank1 = playerCard1.length === 3 ? '0' : playerCard1[0];
-      const playerRank2 = playerCard2.length === 3 ? '0' : playerCard2[0];
-      const dealerRank = dealerCard.length === 3 ? '0' : dealerCard[0];
+function evaluateMove(playerTotal, dealerValue, isSoft, pair) {
+  if (pair) {
+    if (pair === 'A' || pair === '8') return 'Split';
+    if (pair === '9') return (dealerValue >= 2 && dealerValue <= 6 || dealerValue === 8 || dealerValue === 9) ? 'Split' : 'Stand';
+    if (pair === '7') return (dealerValue <= 7) ? 'Split' : 'Hit';
+    if (pair === '6') return (dealerValue <= 6) ? 'Split' : 'Hit';
+    if (pair === '4') return (dealerValue === 5 || dealerValue === 6) ? 'Split' : 'Hit';
+    if (pair === '3' || pair === '2') return (dealerValue <= 7) ? 'Split' : 'Hit';
+    return 'Stand';
+  }
+  if (!isSoft) {
+    if (playerTotal >= 17) return 'Stand';
+    if (playerTotal === 16) return dealerValue >= 9 ? 'Surrender' : (dealerValue <= 6 ? 'Stand' : 'Hit');
+    if (playerTotal === 15) return dealerValue === 10 ? 'Surrender' : (dealerValue <= 6 ? 'Stand' : 'Hit');
+    if (playerTotal >= 13 && playerTotal <= 14) return dealerValue <= 6 ? 'Stand' : 'Hit';
+    if (playerTotal === 12) return (dealerValue >= 4 && dealerValue <= 6) ? 'Stand' : 'Hit';
+    if (playerTotal === 11) return 'Double';
+    if (playerTotal === 10) return dealerValue <= 9 ? 'Double' : 'Hit';
+    if (playerTotal === 9) return (dealerValue >= 3 && dealerValue <= 6) ? 'Double' : 'Hit';
+    return 'Hit';
+  } else {
+    if (playerTotal >= 19) return 'Stand';
+    if (playerTotal === 18) return (dealerValue <= 6) ? 'Double' : (dealerValue <= 8 ? 'Stand' : 'Hit');
+    if (playerTotal === 17 || playerTotal === 16) return (dealerValue >= 4 && dealerValue <= 6) ? 'Double' : 'Hit';
+    if (playerTotal === 15 || playerTotal === 14) return (dealerValue >= 4 && dealerValue <= 6) ? 'Double' : 'Hit';
+    if (playerTotal === 13 || playerTotal === 12) return (dealerValue >= 5 && dealerValue <= 6) ? 'Double' : 'Hit';
+    return 'Hit';
+  }
+}
 
-      let playerTotal = getCardValue(playerRank1) + getCardValue(playerRank2);
-      const dealerValue = getCardValue(dealerRank);
-      const isSoft = playerRank1 === 'A' || playerRank2 === 'A';
+let correctCount = 0;
+let totalCount = 0;
+let currentCorrectMove;
 
-      if (playerRank1 === playerRank2 && (playerRank1 === '8' || playerRank1 === 'A')) {
-        currentCorrectMove = 'Split';
-      } else {
-        currentCorrectMove = evaluateMove(playerTotal, dealerValue, isSoft);
-      }
-    }
+function loadSituation() {
+  document.getElementById('dealButton').style.display = 'none';
+  const dealerCard = getRandomCard();
+  const playerCard1 = getRandomCard();
+  const playerCard2 = getRandomCard();
 
-    function checkAnswer(choice) {
-      if (choice === currentCorrectMove) {
-        document.getElementById('resultBanner').innerText = 'CORRECT!';
-        document.getElementById('resultBanner').classList.add('correct');
-        correctCount++;
-      } else {
-        document.getElementById('resultBanner').innerText = `INCORRECT! Correct was ${currentCorrectMove}`;
-        document.getElementById('resultBanner').classList.add('incorrect');
-      }
+  document.getElementById('dealerCard').classList.add('shuffle');
+  document.getElementById('playerCard1').classList.add('shuffle');
+  document.getElementById('playerCard2').classList.add('shuffle');
 
-      totalCount++;
-      document.getElementById('scoreText').innerText = `Score: ${correctCount}/${totalCount} (Accuracy: ${Math.round(correctCount/totalCount*100)}%)`;
+  setTimeout(() => {
+    document.getElementById('dealerCard').src = `https://deckofcardsapi.com/static/img/${dealerCard}.png`;
+    document.getElementById('playerCard1').src = `https://deckofcardsapi.com/static/img/${playerCard1}.png`;
+    document.getElementById('playerCard2').src = `https://deckofcardsapi.com/static/img/${playerCard2}.png`;
+    document.getElementById('dealerCard').classList.remove('shuffle');
+    document.getElementById('playerCard1').classList.remove('shuffle');
+    document.getElementById('playerCard2').classList.remove('shuffle');
+    document.getElementById('resultBanner').innerText = '';
+    document.getElementById('resultBanner').className = 'result-banner';
+  }, 500);
 
-      document.getElementById('dealButton').style.display = 'block';
-    }
+  const playerRank1 = playerCard1.length === 3 ? '0' : playerCard1[0];
+  const playerRank2 = playerCard2.length === 3 ? '0' : playerCard2[0];
+  const dealerRank = dealerCard.length === 3 ? '0' : dealerCard[0];
 
-    loadSituation();
-  </script>
+  let playerTotal = getCardValue(playerRank1) + getCardValue(playerRank2);
+  const dealerValue = getCardValue(dealerRank);
+  const isSoft = playerRank1 === 'A' || playerRank2 === 'A';
+  const pair = playerRank1 === playerRank2 ? playerRank1 : null;
+
+  currentCorrectMove = evaluateMove(playerTotal, dealerValue, isSoft, pair);
+}
+
+function checkAnswer(choice) {
+  if (choice === currentCorrectMove) {
+    document.getElementById('resultBanner').innerText = 'CORRECT!';
+    document.getElementById('resultBanner').classList.add('correct');
+    correctCount++;
+  } else {
+    document.getElementById('resultBanner').innerText = `INCORRECT! Correct was ${currentCorrectMove}`;
+    document.getElementById('resultBanner').classList.add('incorrect');
+  }
+
+  totalCount++;
+  document.getElementById('scoreText').innerText = `Score: ${correctCount}/${totalCount} (Accuracy: ${Math.round(correctCount/totalCount*100)}%)`;
+
+  document.getElementById('dealButton').style.display = 'block';
+}
+
+loadSituation();
+</script>
 
 </body>
 </html>
