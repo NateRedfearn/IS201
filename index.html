@@ -31,6 +31,11 @@
     .card {
       width: 80px;
       margin: 0 10px;
+      transition: transform 0.5s;
+    }
+
+    .shuffle {
+      transform: rotateY(360deg);
     }
 
     button {
@@ -96,66 +101,58 @@
 
   <script>
     const situations = [
-      {
-        playerCards: ['8C', '8D'], dealerCard: '9S', correctMove: 'Split'
-      },
-      {
-        playerCards: ['10H', '6D'], dealerCard: '10C', correctMove: 'Hit'
-      },
-      {
-        playerCards: ['AC', '7H'], dealerCard: '9D', correctMove: 'Hit'
-      },
-      {
-        playerCards: ['6H', '5S'], dealerCard: '6S', correctMove: 'Double'
-      },
-      {
-        playerCards: ['7D', '5H'], dealerCard: '6H', correctMove: 'Double'
-      },
-      {
-        playerCards: ['10D', '10S'], dealerCard: '6D', correctMove: 'Stand'
-      },
-      {
-        playerCards: ['9S', '7C'], dealerCard: '5H', correctMove: 'Stand'
-      },
-      {
-        playerCards: ['AC', '6D'], dealerCard: '5S', correctMove: 'Double'
-      },
-      {
-        playerCards: ['8S', '8H'], dealerCard: '10H', correctMove: 'Split'
-      }
+      { playerCards: ['8C', '8D'], dealerCard: '9S', correctMove: 'Split' },
+      { playerCards: ['10H', '6D'], dealerCard: '10C', correctMove: 'Hit' },
+      { playerCards: ['AC', '7H'], dealerCard: '9D', correctMove: 'Hit' },
+      { playerCards: ['6H', '5S'], dealerCard: '6S', correctMove: 'Double' },
+      { playerCards: ['7D', '5H'], dealerCard: '6H', correctMove: 'Double' },
+      { playerCards: ['10D', '10S'], dealerCard: '6D', correctMove: 'Stand' },
+      { playerCards: ['9S', '7C'], dealerCard: '5H', correctMove: 'Stand' },
+      { playerCards: ['AC', '6D'], dealerCard: '5S', correctMove: 'Double' },
+      { playerCards: ['8S', '8H'], dealerCard: '10H', correctMove: 'Split' }
     ];
 
-    let current = 0;
     let correctCount = 0;
+    let totalCount = 0;
+    let currentSituation;
+
+    function getRandomSituation() {
+      return situations[Math.floor(Math.random() * situations.length)];
+    }
 
     function loadSituation() {
-      const situation = situations[current];
-      document.getElementById('dealerCard').src = `https://deckofcardsapi.com/static/img/${situation.dealerCard}.png`;
-      document.getElementById('playerCard1').src = `https://deckofcardsapi.com/static/img/${situation.playerCards[0]}.png`;
-      document.getElementById('playerCard2').src = `https://deckofcardsapi.com/static/img/${situation.playerCards[1]}.png`;
-      document.getElementById('resultBanner').innerText = '';
-      document.getElementById('resultBanner').className = 'result-banner';
+      const situation = getRandomSituation();
+      currentSituation = situation;
+      document.getElementById('dealerCard').classList.add('shuffle');
+      document.getElementById('playerCard1').classList.add('shuffle');
+      document.getElementById('playerCard2').classList.add('shuffle');
+
+      setTimeout(() => {
+        document.getElementById('dealerCard').src = `https://deckofcardsapi.com/static/img/${situation.dealerCard}.png`;
+        document.getElementById('playerCard1').src = `https://deckofcardsapi.com/static/img/${situation.playerCards[0]}.png`;
+        document.getElementById('playerCard2').src = `https://deckofcardsapi.com/static/img/${situation.playerCards[1]}.png`;
+        document.getElementById('dealerCard').classList.remove('shuffle');
+        document.getElementById('playerCard1').classList.remove('shuffle');
+        document.getElementById('playerCard2').classList.remove('shuffle');
+        document.getElementById('resultBanner').innerText = '';
+        document.getElementById('resultBanner').className = 'result-banner';
+      }, 500);
     }
 
     function checkAnswer(choice) {
-      const situation = situations[current];
-      if (choice === situation.correctMove) {
+      if (choice === currentSituation.correctMove) {
         document.getElementById('resultBanner').innerText = 'CORRECT!';
         document.getElementById('resultBanner').classList.add('correct');
         correctCount++;
       } else {
-        document.getElementById('resultBanner').innerText = `INCORRECT! Correct was ${situation.correctMove}`;
+        document.getElementById('resultBanner').innerText = `INCORRECT! Correct was ${currentSituation.correctMove}`;
         document.getElementById('resultBanner').classList.add('incorrect');
       }
 
-      current++;
-      document.getElementById('scoreText').innerText = `Score: ${correctCount}/${current} (Accuracy: ${Math.round(correctCount/current*100)}%)`;
+      totalCount++;
+      document.getElementById('scoreText').innerText = `Score: ${correctCount}/${totalCount} (Accuracy: ${Math.round(correctCount/totalCount*100)}%)`;
 
-      if (current < situations.length) {
-        setTimeout(loadSituation, 2000);
-      } else {
-        document.getElementById('buttons').innerHTML = '<h2>Training Complete!</h2>';
-      }
+      setTimeout(loadSituation, 2000);
     }
 
     loadSituation();
