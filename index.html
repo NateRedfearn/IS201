@@ -100,17 +100,18 @@
   </div>
 
   <script>
-    const situations = [
-      { playerCards: ['8C', '8D'], dealerCard: '9S', correctMove: 'Split' },
-      { playerCards: ['10H', '6D'], dealerCard: '10C', correctMove: 'Hit' },
-      { playerCards: ['AC', '7H'], dealerCard: '9D', correctMove: 'Hit' },
-      { playerCards: ['6H', '5S'], dealerCard: '6S', correctMove: 'Double' },
-      { playerCards: ['7D', '5H'], dealerCard: '6H', correctMove: 'Double' },
-      { playerCards: ['10D', '10S'], dealerCard: '6D', correctMove: 'Stand' },
-      { playerCards: ['9S', '7C'], dealerCard: '5H', correctMove: 'Stand' },
-      { playerCards: ['AC', '6D'], dealerCard: '5S', correctMove: 'Double' },
-      { playerCards: ['8S', '8H'], dealerCard: '10H', correctMove: 'Split' }
-    ];
+   const situations = [
+  { playerCards: ['8C', '8D'], dealerCard: '9S', correctMove: 'Split' },
+  { playerCards: ['0H', '6D'], dealerCard: '0C', correctMove: 'Hit' }, // changed 10H and 10C
+  { playerCards: ['AC', '7H'], dealerCard: '9D', correctMove: 'Hit' },
+  { playerCards: ['6H', '5S'], dealerCard: '6S', correctMove: 'Double' },
+  { playerCards: ['7D', '5H'], dealerCard: '6H', correctMove: 'Double' },
+  { playerCards: ['0D', '0S'], dealerCard: '6D', correctMove: 'Stand' }, // changed 10D and 10S
+  { playerCards: ['9S', '7C'], dealerCard: '5H', correctMove: 'Stand' },
+  { playerCards: ['AC', '6D'], dealerCard: '5S', correctMove: 'Double' },
+  { playerCards: ['8S', '8H'], dealerCard: '0H', correctMove: 'Split' } // changed 10H
+];
+
 
     let correctCount = 0;
     let totalCount = 0;
