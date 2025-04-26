@@ -9,17 +9,30 @@
       padding: 0;
       background: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Baize.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Georgia', serif;
       color: white;
       text-align: center;
     }
 
     .table {
       background-color: rgba(0, 0, 0, 0.6);
-      border-radius: 15px;
-      padding: 30px;
-      margin: 50px auto;
-      max-width: 700px;
+      border-radius: 0 0 100% 100% / 0 0 30% 30%;
+      padding: 50px 30px 100px;
+      margin: 50px auto 0 auto;
+      max-width: 800px;
+      position: relative;
+    }
+
+    .table::before {
+      content: 'BLACKJACK PAYS 3 TO 2';
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: gold;
+      letter-spacing: 2px;
     }
 
     .cards {
@@ -42,15 +55,16 @@
       font-size: 20px;
       padding: 10px 20px;
       margin: 10px;
-      background: #004d00;
+      background: linear-gradient(#006400, #004d00);
       color: white;
-      border: 2px solid white;
-      border-radius: 8px;
+      border: 2px solid gold;
+      border-radius: 12px;
       cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
     }
 
     button:hover {
-      background: #008000;
+      background: linear-gradient(#008000, #006400);
     }
 
     .result-banner {
@@ -67,12 +81,19 @@
     .incorrect {
       background-color: rgba(200, 0, 0, 0.8);
     }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 36px;
+      color: gold;
+      text-shadow: 2px 2px black;
+    }
   </style>
 </head>
 <body>
 
+  <h1>Blackjack Strategy Trainer</h1>
   <div class="table">
-    <h1>Blackjack Strategy Trainer</h1>
     <div class="cards">
       <div>
         <h3>Dealer</h3>
@@ -93,6 +114,9 @@
       <button onclick="checkAnswer('Stand')">Stand</button>
       <button onclick="checkAnswer('Double')">Double</button>
       <button onclick="checkAnswer('Split')">Split</button>
+    </div>
+
+    <div id="dealButton" style="display:none;">
       <button onclick="loadSituation()">Deal New Hand</button>
     </div>
 
@@ -137,6 +161,7 @@
     let currentCorrectMove;
 
     function loadSituation() {
+      document.getElementById('dealButton').style.display = 'none';
       const dealerCard = getRandomCard();
       const playerCard1 = getRandomCard();
       const playerCard2 = getRandomCard();
@@ -184,7 +209,7 @@
       totalCount++;
       document.getElementById('scoreText').innerText = `Score: ${correctCount}/${totalCount} (Accuracy: ${Math.round(correctCount/totalCount*100)}%)`;
 
-      setTimeout(loadSituation, 2000);
+      document.getElementById('dealButton').style.display = 'block';
     }
 
     loadSituation();
